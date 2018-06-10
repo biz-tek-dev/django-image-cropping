@@ -11,12 +11,16 @@ class SorlThumbnailBackend(ImageBackend):
 
     def get_thumbnail_url(self, image_path, thumbnail_options):
         geometry_string = '{}x{}'.format(thumbnail_options['size'][0], thumbnail_options['size'][1])
+        thumbnail_options.pop('crop')
+        thumbnail_options.pop('detail')
+        thumbnail_options.pop('size')
 
         thumb = get_thumbnail(
             image_path,
             geometry_string,
-            cropbox=thumbnail_options['box'],
-            upscale=thumbnail_options['upscale']
+            cropbox=thumbnail_options.pop('box'),
+            upscale=thumbnail_options.pop('upscale'),
+            **thumbnail_options
         )
         return thumb.url
 
