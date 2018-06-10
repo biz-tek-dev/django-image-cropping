@@ -1,5 +1,5 @@
 import itertools
-
+import unittest
 from PIL import Image
 
 from django.conf import settings
@@ -37,6 +37,11 @@ class TemplateTagTestBase(object):
         return t.render(self.context)
 
 
+@unittest.skipIf(
+    getattr(settings, 'IMAGE_CROPPING_BACKEND', '') ==
+    'image_cropping.backends.sorl_thumbnail.SorlThumbnailBackend',
+    'Currently does not support'
+)
 class CroppingTestCase(TemplateTagTestBase, TestCase):
     def assertRaisesWithMessage(self, msg, func, *args, **kwargs):
         # http://stackoverflow.com/a/8673096
@@ -124,6 +129,11 @@ class CroppingTestCase(TemplateTagTestBase, TestCase):
         return True
 
 
+@unittest.skipIf(
+    getattr(settings, 'IMAGE_CROPPING_BACKEND', '') ==
+    'image_cropping.backends.sorl_thumbnail.SorlThumbnailBackend',
+    'Currently does not support'
+)
 class FreeCroppingTestCase(TemplateTagTestBase, TestCase):
     def _test_free_cropping(self, options={}):
         return self._test_templatetag('cropping_free', options)

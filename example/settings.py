@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    'sorl.thumbnail',
     'easy_thumbnails',
     'image_cropping',
     'example',
@@ -86,6 +87,9 @@ INSTALLED_APPS = [
 THUMBNAIL_PROCESSORS = (
     'image_cropping.thumbnail_processors.crop_corners',
 ) + thumbnail_settings.THUMBNAIL_PROCESSORS
+
+# IMAGE_CROPPING_BACKEND = 'image_cropping.backends.sorl_thumbnail.SorlThumbnailBackend'
+# IMAGE_CROPPING_BACKEND_PARAMS = {}
 
 try:
     import django_extensions

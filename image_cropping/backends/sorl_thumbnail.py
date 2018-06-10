@@ -1,23 +1,24 @@
-"""
-Backend for easy_thumbnails_ package. This module can't be named
-"easy_thumbnails" in order to avoid Python import conflicts.
-
-.. _easy_thumbnails: https://github.com/SmileyChris/easy-thumbnails
-"""
-
-from easy_thumbnails.exceptions import InvalidImageFormatError
-from easy_thumbnails.files import get_thumbnailer
-from easy_thumbnails.source_generators import pil_image
+from sorl.thumbnail.engines.convert_engine import EngineError
+from sorl.thumbnail.images import ThumbnailError
+from sorl.thumbnail.parsers import ThumbnailParseError
+from sorl.thumbnail import get_thumbnail
 
 from .base import ImageBackend
 
 
-class EasyThumbnailsBackend(ImageBackend):
-    exceptions_to_catch = (InvalidImageFormatError, IOError)
+class SorlThumbnailBackend(ImageBackend):
+    exceptions_to_catch = (EngineError, ThumbnailError, ThumbnailParseError, IOError, OSError)
 
     def get_thumbnail_url(self, image_path, thumbnail_options):
-        thumb = get_thumbnailer(image_path)
-        return thumb.get_thumbnail(thumbnail_options).url
+        geometry_string = '{}x{}'.format(thumbnail_options['size'][0], thumbnail_options['size'][1])
+
+        thumb = get_thumbnail(
+            image_path,
+            geometry_string,
+            cropbox=thumbnail_options['box'],
+            upscale=thumbnail_options['upscale']
+        )
+        return thumb.url
 
     def get_size(self, image):
-        return pil_image(image).size
+        return image.size
